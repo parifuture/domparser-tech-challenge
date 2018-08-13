@@ -72,11 +72,7 @@ body {
   text-transform: uppercase;
 }
 
-.folder {
-  background-image: image('icon-sprite.png');
-}
-
-.file {
+.folder img, .file img, .expand img, .collapse img {
   background-image: image('icon-sprite.png');
 }
 
@@ -124,14 +120,54 @@ img {
   height: 14px;
 }
 
-.folder img {
+.folder-img {
   object-position: 0px 0px;
 }
 
-.file img {
+.file-img {
   object-position: -28px 0px;
 }
 
-.private-folder  img {
+.private-folder-img {
   object-position: -14px 0px;
+}
+
+.expand-img {
+  cursor: pointer;
+  object-position: -56px 0px;
+}
+
+.collapse-img {
+  cursor: pointer;
+  object-position: -70px 0px;
+}
+
+.close-img {
+  cursor: pointer;
+  object-position: -42px 0px;
+}
+
+/* Overwirting some other style */
+.nav-link {
+  padding: .2rem 0.1rem;
+}
+
+.private-folder a, .folder a {
+  display: inline;
+}
+
+.nav-item {
+  padding: 5px 5px;
+}
+
+.nav-item.active {
+  background-color: #4285f4;
+}
+
+.fixed-top {
+    position: fixed;
+    top: 12px;
+    right: 0;
+    left: 0;
+    z-index: 1030;
 }

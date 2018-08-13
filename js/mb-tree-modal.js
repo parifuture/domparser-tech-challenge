@@ -17,7 +17,7 @@ const finalOutputHtmlHeader = `<!DOCTYPE html>
   <body>
     <nav class="navbar navbar-light fixed-top bg-light flex-md-nowrap p-0 shadow">
       <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">
-        Title
+        <h5 style="padding-left: 2.5em;">Title</h5>
       </a>
     </nav>
     <div class="container-fluid">
@@ -25,8 +25,8 @@ const finalOutputHtmlHeader = `<!DOCTYPE html>
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
           <div class="sidebar-sticky">
             <ul class="nav flex-column">
-              <li class="nav-item">
-                <label>Label</label>
+              <li class="nav-item" style="border-bottom:1px solid #e8e8e8;border-top:1px solid #e8e8e8;">
+                <label style="color: #b2b2b2;padding-left: 2.5em;padding-top: 0.75em;">Label</label>
               </li>`;
 const finalOutputHtmlFooter = `</ul>
           </div>
@@ -38,7 +38,9 @@ const finalOutputHtmlFooter = `</ul>
     </div>
     <!-- Bootstrap core JavaScript
     ================================================== -->
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/mb-ui-interactions.js"></script>
 </body></html>`;
 
 
@@ -60,13 +62,13 @@ const createFolderFromDomElement = function (node) {
         $(node).contents().map(function (val, i) {
             if (i.nodeType === 1) {
                 if (i.localName === 'head') {
-                    result += `<li class="nav-item private-folder"><a class="nav-link" href="#">
-                  <img class="" src='images/icon-sprite.png' alt='Icons'>
+                  result += `<li class="nav-item private-folder"><img class="expand-img" src='images/icon-sprite.png' alt='Icons'><a class="nav-link" href="#">
+                  <img class="private-folder-img" src='images/icon-sprite.png' alt='Icons'>
                   <span>${i.localName}</span>
                 </a></li>`;
                 } else {
-                    result += `<li class="nav-item folder"><a class="nav-link" href="#">
-                  <img class="" src='images/icon-sprite.png' alt='Icons'>
+                  result += `<li class="nav-item folder"><img class="expand-img" src='images/icon-sprite.png' alt='Icons'><a class="nav-link" href="#">
+                  <img class="folder-img" src='images/icon-sprite.png' alt='Icons'>
                   <span>${i.localName}</span>
                 </a></li>`;
                 }
@@ -77,7 +79,7 @@ const createFolderFromDomElement = function (node) {
                     nodeText = nodeText.trim();
                     if (nodeText.length > 0) {
                         result += `<li class="nav-item file"><a class="nav-link" href="#">
-                  <img class="" src='images/icon-sprite.png' alt='Icons'>
+                  <img class="file-img" src='images/icon-sprite.png' alt='Icons'>
                   <span>${nodeText}</span>
                 </a></li>`;
                     }
