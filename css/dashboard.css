@@ -164,6 +164,10 @@ img {
   background-color: #4285f4;
 }
 
+.nav-item.active a span {
+  color: #FFF;
+}
+
 .fixed-top {
     position: fixed;
     top: 12px;

@@ -12,4 +12,11 @@ $(document).ready(function () {
         $(this).css('object-position', '-42px 0px');
     });
 
+    $('.file').click(function() {
+        if(!$(this).hasClass('active')) {
+            $('.active').removeClass('active');
+        }
+        $(this).toggleClass('active');
+    })
+
 });

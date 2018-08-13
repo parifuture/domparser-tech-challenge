@@ -39,72 +39,80 @@ const finalOutputHtmlFooter = `</ul>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"></script>
     <script src="js/mb-ui-interactions.js"></script>
 </body></html>`;
 
+const truncateText = function (str) {
+  if (str.length > 30) {
+    str.trim().substring(0, 10).split(" ").slice(0, -1).join(" ") + "...";
+  }
+  return str;
+}
 
 const createFolderFromDomElement = function (node) {
 
-    /*
-    * DOM element nodes should be represented as "folders"
-    * Display the DOM element tag name next to folders
-    * Folders can be expanded and collapsed by clicking
-    * Text nodes should be represented as "files"
-    * Display a single line of text content next to "files"
-    * Text truncates with ellipsis if too wide
-    */
-    node = $(node);
-    let folderStructure = '';
-    let childrenNodeCount = node.contents().length;
-    if (childrenNodeCount > 0) {
-            result += '<ul>';
-        $(node).contents().map(function (val, i) {
-            if (i.nodeType === 1) {
-                if (i.localName === 'head') {
-                  result += `<li class="nav-item private-folder"><img class="expand-img" src='images/icon-sprite.png' alt='Icons'><a class="nav-link" href="#">
+  /*
+  * DOM element nodes should be represented as "folders"
+  * Display the DOM element tag name next to folders
+  * Folders can be expanded and collapsed by clicking
+  * Text nodes should be represented as "files"
+  * Display a single line of text content next to "files"
+  * Text truncates with ellipsis if too wide
+  */
+  node = $(node);
+  let folderStructure = '';
+  let childrenNodeCount = node.contents().length;
+  if (childrenNodeCount > 0) {
+    result += '<ul>';
+    $(node).contents().map(function (val, i) {
+      if (i.nodeType === 1) {
+        i.localName = truncateText(i.localName);
+        if (i.localName === 'head') {
+          result += `<li class="nav-item private-folder"><img class="expand-img" src='images/icon-sprite.png' alt='Icons'><a class="nav-link" href="#">
                   <img class="private-folder-img" src='images/icon-sprite.png' alt='Icons'>
                   <span>${i.localName}</span>
                 </a></li>`;
-                } else {
-                  result += `<li class="nav-item folder"><img class="expand-img" src='images/icon-sprite.png' alt='Icons'><a class="nav-link" href="#">
+        } else {
+          result += `<li class="nav-item folder"><img class="expand-img" src='images/icon-sprite.png' alt='Icons'><a class="nav-link" href="#">
                   <img class="folder-img" src='images/icon-sprite.png' alt='Icons'>
                   <span>${i.localName}</span>
                 </a></li>`;
-                }
-                createFolderFromDomElement(i);
-            } else if (i.nodeType === 3) {
-                let nodeText = i.data;
-                if (typeof nodeText !== undefined) {
-                    nodeText = nodeText.trim();
-                    if (nodeText.length > 0) {
-                        result += `<li class="nav-item file"><a class="nav-link" href="#">
+        }
+        createFolderFromDomElement(i);
+      } else if (i.nodeType === 3) {
+        let nodeText = i.data;
+        nodeText = truncateText(nodeText);
+        if (typeof nodeText !== undefined) {
+          nodeText = nodeText.trim();
+          if (nodeText.length > 0) {
+            result += `<li class="nav-item file"><a class="nav-link" href="#">
                   <img class="file-img" src='images/icon-sprite.png' alt='Icons'>
                   <span>${nodeText}</span>
                 </a></li>`;
-                    }
-                }
-            }
-        });
-            result += '</ul>';
-    }
-   return result;
+          }
+        }
+      }
+    });
+    result += '</ul>';
+  }
+  return result;
 }
 
 // if no node is passed then we will start from the root node
 // Assumption: All the index.html file will contain HTML tag as the root node
 // Assumpttion: If the text field inside an element is a new line space it will be ignored
 
-const parseDom = function (node='html') {
-  let result =  createFolderFromDomElement(node);
+const parseDom = function (node = 'html') {
+  let result = createFolderFromDomElement(node);
   result = finalOutputHtmlHeader + result + finalOutputHtmlFooter;
   updatePage(result);
 }
 
-const updatePage = function(result) {
+const updatePage = function (result) {
   $("html").html(result);
 }
 
-$(document).ready(function() {
-    parseDom('html');
+$(document).ready(function () {
+  parseDom('html');
 });
