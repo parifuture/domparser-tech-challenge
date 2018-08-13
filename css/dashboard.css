@@ -32,6 +32,15 @@ body {
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
 }
 
+.sidebar-sticky ul {
+  list-style-type: none;
+}
+
+.sidebar-sticky li a span {
+  text-transform: capitalize;
+  font-size: 12px;
+}
+
 @supports ((position: -webkit-sticky) or (position: sticky)) {
   .sidebar-sticky {
     position: -webkit-sticky;
