@@ -1,21 +1,24 @@
 $(document).ready(function () {
     
-    $(".expand-img").on("click", function () {
+    $("#folderizeModal").on("click",".expand-img", function () {
         $(this).removeClass('expand-img');
         $(this).addClass('collapse-img');
+        console.log('lala',$(this).parent('li'));
+        $(this).parent('li').next().toggleClass("show");
     });
 
-    $(".collapse-img").on("click", function () {
+    $("#folderizeModal").on("click",".collapse-img", function () {
         $(this).removeClass('collapse-img');
         $(this).addClass('expand-img');
-        $(this).css('object-position', '-42px 0px');
+        $(this).parent('li').next().toggleClass("show");
+        // $(this).css('object-position', '-42px 0px');
     });
 
-    $('.file').on("click", function () {
+    $("#folderizeModal").on("click",".file",function () {
         if(!$(this).hasClass('active')) {
             $('.active').removeClass('active');
         }
         $(this).toggleClass('active');
-    })
+    });
 
 });

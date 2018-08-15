@@ -106,7 +106,17 @@ img {
   object-position: -56px 0px;
 }
 
+.expand-white-img {
+  cursor: pointer;
+  object-position: -56px 0px;
+}
+
 .collapse-img {
+  cursor: pointer;
+  object-position: -70px 0px;
+}
+
+.collapse-white-img {
   cursor: pointer;
   object-position: -70px 0px;
 }

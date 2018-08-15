@@ -1,39 +1,50 @@
+'use strict';
+
 let result = '';
 let currentNodeParsingStack = [];
+let globalCounter = 1;
+
+// Creating a dom element script which 
+// invokes the logic for creating tree structure
 
 let script = document.createElement('script');
+// once the script is loded in DOM the code get executed
 script.onload = function () {
+  
+  // function to truncate the file/folder name and add ellpisie in the end
   const truncateText = function (str) {
     if (str.length > 30) {
       str = str.trim().substring(0, 10).split(" ").slice(0, -1).join(" ") + "...";
     }
     return str;
   }
-  const createFolderFromDomElement = function (node) {
 
+  const createFolderFromDomElement = function (node) {
     /*
-    * DOM element nodes should be represented as "folders"
-    * Display the DOM element tag name next to folders
-    * Folders can be expanded and collapsed by clicking
-    * Text nodes should be represented as "files"
-    * Display a single line of text content next to "files"
-    * Text truncates with ellipsis if too wide
+    * A recusrive function that parses the DOM
+    * Is responsible for creating the tree structure
     */
     node = $(node);
     let folderStructure = '';
     let childrenNodeCount = node.contents().length;
     if (childrenNodeCount > 0) {
-      result += '<ul>';
+      if(result.length === 0) {
+        result += '<ul class="root">';
+      } else {
+        result += '<ul class="sub-list collapse" id="menu-item-' + globalCounter + '">';
+        globalCounter++;
+      }
+
       $(node).contents().map(function (val, i) {
         if (i.nodeType === 1) {
           i.localName = truncateText(i.localName);
           if (i.localName === 'head') {
-            result += `<li class="nav-item private-folder"><img class="expand-img" src='images/icon-sprite.png' alt='Icons'><a class="nav-link" href="#">
+            result += `<li class="nav-item folder private-folder"><a data-toggle="collapse" class="nav-link" href="#menu-item-` + globalCounter + `"><img class="ui-action expand-img" src='images/icon-sprite.png' alt='Icons'>
                   <img class="private-folder-img" src='images/icon-sprite.png' alt='Icons'>
                   <span>${i.localName}</span>
                 </a></li>`;
           } else {
-            result += `<li class="nav-item folder"><img class="expand-img" src='images/icon-sprite.png' alt='Icons'><a class="nav-link" href="#">
+            result += `<li class="nav-item folder"><a class="nav-link" data-toggle="collapse"  href="#menu-item-` + globalCounter + `"><img class="expand-img" src='images/icon-sprite.png' alt='Icons'>
                   <img class="folder-img" src='images/icon-sprite.png' alt='Icons'>
                   <span>${i.localName}</span>
                 </a></li>`;
@@ -66,13 +77,10 @@ script.onload = function () {
   // Assumpttion: If the text field inside an element is a new line space it will be ignored
 
   const parseDom = function (node = 'html') {
-    let result = createFolderFromDomElement(node);
-    updateModal(result);
-  }
-
-  const updateModal = function (result) {
-    $('#folderizeModal .modal-body').html(result);
-    // $("html").html(result);
+    if(result.length === 0) {
+      let result = createFolderFromDomElement(node);
+      $('#folderizeModal .modal-body').html(result);
+    }
   }
 
   const folderTemplateModal = `
@@ -111,7 +119,7 @@ script.onload = function () {
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-link">Link</button>
             <button type="button" class="btn btn-primary">Done</button>
           </div>
         </div>
@@ -122,25 +130,35 @@ script.onload = function () {
     $('body').append(folderTemplateModal);
     $("#folderize-btn").click(function() {
       parseDom('html');
-    })
-
-    $(".expand-img").on("click", function () {
-      $(this).removeClass('expand-img');
-      $(this).addClass('collapse-img');
     });
 
-    $(".collapse-img").on("click", function () {
-      $(this).removeClass('collapse-img');
-      $(this).addClass('expand-img');
-      $(this).css('object-position', '-42px 0px');
-    });
-
-    $('.file').on("click", function () {
-      if (!$(this).hasClass('active')) {
+    $("#folderizeModal").on("click", ".nav-link", function (event) {
+      $(this).children('.ui-action').toggleClass('expand-img');
+      $(this).children('.ui-action').toggleClass('collapse-img');
+      if (!$(this).parent('li').hasClass('active')) {
         $('.active').removeClass('active');
       }
+      $(this).parent('li').toggleClass('active');
+      // if ($(this).parent('li').next()[0].nodeName === 'UL') {
+      //   console.log('lala', $(this).parent().next()[0].nodeName);
+      //   $(this).parent().next('ul').toggleClass("show");
+      // }
+    });
+
+    // $("#folderizeModal").on("click", ".collapse-img", function () {
+      // $(this).removeClass('collapse-img');
+      // $(this).addClass('expand-img');
+      // $(this).parent('li').next().toggleClass("show");
+      // $(this).css('object-position', '-42px 0px');
+    // });
+
+    $("#folderizeModal").on("click", ".file", function () {
+      // if (!$(this).hasClass('active')) {
+        $('.active').removeClass('active');
+      // }
       $(this).toggleClass('active');
-    })
+    });
+
   });
 };
 script.src = 'https://code.jquery.com/jquery-3.3.1.js';
