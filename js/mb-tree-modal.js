@@ -5,7 +5,7 @@ let script = document.createElement('script');
 script.onload = function () {
   const truncateText = function (str) {
     if (str.length > 30) {
-      str.trim().substring(0, 10).split(" ").slice(0, -1).join(" ") + "...";
+      str = str.trim().substring(0, 10).split(" ").slice(0, -1).join(" ") + "...";
     }
     return str;
   }
@@ -38,7 +38,10 @@ script.onload = function () {
                   <span>${i.localName}</span>
                 </a></li>`;
           }
-          createFolderFromDomElement(i);
+
+          if (i.className !== 'do-not-folderize') {
+            createFolderFromDomElement(i);
+          }
         } else if (i.nodeType === 3) {
           let nodeText = i.data;
           nodeText = truncateText(nodeText);
@@ -64,7 +67,6 @@ script.onload = function () {
 
   const parseDom = function (node = 'html') {
     let result = createFolderFromDomElement(node);
-    // result = finalOutputHtmlHeader + result + finalOutputHtmlFooter;
     updateModal(result);
   }
 
@@ -74,9 +76,13 @@ script.onload = function () {
   }
 
   const folderTemplateModal = `
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-<div id="do-not-folderize">
+<link class="do-not-folderize" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+<script class="do-not-folderize" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<div class="do-not-folderize">
+    <!-- Bootstrap core CSS -->		
+    <link href="css/bootstrap.min.css" rel="stylesheet">		
+    <!-- Custom styles for this template -->		
+    <link href="css/dashboard.css" rel="stylesheet">
   <button type="button" id="folderize-btn" class="btn btn-primary" data-toggle="modal" data-target="#folderizeModal">
       Folderize
   </button>
@@ -86,16 +92,27 @@ script.onload = function () {
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="folderizeModalLabel">Modal title</h5>
+            <h5 class="modal-title" id="folderizeModalLabel">Title</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-      </div>
+            <div class="row">		
+              <nav class="col-md-2 d-none d-md-block bg-light sidebar">		
+                <div class="sidebar-sticky">		
+                  <ul class="nav flex-column">		
+                    <li class="nav-item" style="border-bottom:1px solid #e8e8e8;border-top:1px solid #e8e8e8;">		
+                      <label style="color: #b2b2b2;padding-left: 2.5em;padding-top: 0.75em;">Label</label>		
+                    </li>
+                  </ul>		
+                </div>
+              </nav>
+            </div>
+          </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-primary">Done</button>
           </div>
         </div>
       </div>
@@ -103,8 +120,26 @@ script.onload = function () {
     </div>`;
   $(document).ready(function () {
     $('body').append(folderTemplateModal);
-    $("#folderize-btn").click(function(){
+    $("#folderize-btn").click(function() {
       parseDom('html');
+    })
+
+    $(".expand-img").on("click", function () {
+      $(this).removeClass('expand-img');
+      $(this).addClass('collapse-img');
+    });
+
+    $(".collapse-img").on("click", function () {
+      $(this).removeClass('collapse-img');
+      $(this).addClass('expand-img');
+      $(this).css('object-position', '-42px 0px');
+    });
+
+    $('.file').on("click", function () {
+      if (!$(this).hasClass('active')) {
+        $('.active').removeClass('active');
+      }
+      $(this).toggleClass('active');
     })
   });
 };
