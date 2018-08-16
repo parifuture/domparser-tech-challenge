@@ -3,6 +3,7 @@
 // Assumptions
 // All the index.html file will contain HTML tag as the root node
 // If the text inside an element is new line it will be ignored
+// We will add the two script tags (folderize.js and jQuery.js) inside the HTML file
 
 
 // The following requirements were not clear
