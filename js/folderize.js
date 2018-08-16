@@ -4,6 +4,16 @@
 // All the index.html file will contain HTML tag as the root node
 // If the text inside an element is new line it will be ignored
 
+
+// The following requirements were not clear
+// In mockup.png there are no requirements for the Lable element (what it represents)
+// In mockup.png there are no requirements for the Link element(what it represents)
+// In mockup.png there are no requirements for the Title element (what it represents) 
+
+// TODO
+// When a folder/file is selected update the collapse/expand icon to be white
+// The font color of text used in the file/folder name is not clear, an exact hex value will help resolve the issue
+
 class Folderize {
   constructor() {
 
@@ -33,21 +43,22 @@ class Folderize {
             </button>
           </div>
           <div class="modal-body">
-            <div class="row">		
-              <nav class="col-md-2 d-none d-md-block bg-light sidebar">		
-                <div class="sidebar-sticky">		
-                  <ul class="nav flex-column">		
-                    <li class="nav-item" style="border-bottom:1px solid #e8e8e8;border-top:1px solid #e8e8e8;">		
-                      <label style="color: #b2b2b2;padding-left: 2.5em;padding-top: 0.75em;">Label</label>		
-                    </li>
-                  </ul>		
-                </div>
-              </nav>
-            </div>
+            <div class="ribbon"></div>
+            <div id="folder-list"></div>
+
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-link">Link</button>
-            <button type="button" class="btn btn-primary">Done</button>
+            <div class="container">
+              <div class="row">
+                <div class="col-sm">
+                  <button type="button" class="btn btn-link">Link</button>
+                </div>
+                <div class="col-sm"></div>
+                <div class="col-sm">
+                  <button type="button" style="margin-left: 3em;" class="btn btn-primary">Done</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -68,7 +79,7 @@ class Folderize {
     * A recusrive function that parses the DOM
     * Is responsible for creating the tree structure
     */
-    self = this;
+    const self = this;
     node = $(node);
     let folderStructure = '';
     let childrenNodeCount = node.contents().length;
@@ -82,9 +93,8 @@ class Folderize {
 
       $(node).contents().map(function (val, i) {
         if (i.nodeType === 1) {
-          // i.localName = truncateText(i.localName);
           let hrefLink = 'href = "#"'
-          // if the tag contains text then we are adding the collapse
+          // if the tag contains text then we are adding the collapse option
           if(i.innerHTML.length > 0 ) {
             hrefLink = `href = "#menu-item-${self.globalCounter}"`;
           }
@@ -123,10 +133,10 @@ class Folderize {
   }
 
   parseDom (node = 'html') {
-    self = this;
+    const self = this;
     if (this.result.length === 0) {
       let result = self.createFolderFromDomElement(node);
-      $('#folderizeModal .modal-body').html(result);
+      $('#folder-list').html(result);
     }
   }
 }
@@ -143,7 +153,10 @@ class Folderize {
 
     $("#folderizeModal").on("click", ".nav-link", function (event) {
       // first we remove all active state folder files
+      $('.ribbon').show();
       $('.active').removeClass('active');
+      $('.ribbon').offset({top: $(this).offset().top-2});
+
 
       // check to see if we are collapsing a folder 
       // Yes then remove highlight
@@ -156,21 +169,9 @@ class Folderize {
       $(this).children('.ui-action').toggleClass('collapse-img');      
     });
 
-    // $("#folderizeModal").on("click", ".collapse-img", function () {
-    // $(this).removeClass('collapse-img');
-    // $(this).addClass('expand-img');
-    // $(this).parent('li').next().toggleClass("show");
-    // $(this).css('object-position', '-42px 0px');
-    // });
-
     $("#folderizeModal").on("click", ".file", function () {
-      // if (!$(this).hasClass('active')) {
       $('.active').removeClass('active');
-      // }
       $(this).toggleClass('active');
     });
   });
   // *** UI/UX END *** 
-// };
-
-
