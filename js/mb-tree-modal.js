@@ -1,8 +1,8 @@
 'use strict';
 
-// if no node is passed then we will start from the root node
-// Assumption: All the index.html file will contain HTML tag as the root node
-// Assumpttion: If the text field inside an element is a new line space it will be ignored
+// Assumptions
+// All the index.html file will contain HTML tag as the root node
+// If the text inside an element is new line it will be ignored
 
 class Folderize {
   constructor() {
@@ -83,13 +83,18 @@ class Folderize {
       $(node).contents().map(function (val, i) {
         if (i.nodeType === 1) {
           // i.localName = truncateText(i.localName);
+          let hrefLink = 'href = "#"'
+          // if the tag contains text then we are adding the collapse
+          if(i.innerHTML.length > 0 ) {
+            hrefLink = `href = "#menu-item-${self.globalCounter}"`;
+          }
           if (i.localName === 'head') {
-            self.result += `<li class="nav-item folder private-folder"><a data-toggle="collapse" class="nav-link" href="#menu-item-` + self.globalCounter + `"><img class="ui-action expand-img" src='images/icon-sprite.png' alt='Icons'>
+            self.result += `<li class="nav-item folder private-folder"><a data-toggle="collapse" class="nav-link" ${hrefLink}> <img class="ui-action expand-img" src='images/icon-sprite.png' alt='Icons'>
                   <img class="private-folder-img" src='images/icon-sprite.png' alt='Icons'>
                   <span>${i.localName}</span>
                 </a></li>`;
           } else {
-            self.result += `<li class="nav-item folder"><a class="nav-link" data-toggle="collapse"  href="#menu-item-` + self.globalCounter + `"><img class="expand-img" src='images/icon-sprite.png' alt='Icons'>
+            self.result += `<li class="nav-item folder"><a class="nav-link" data-toggle="collapse"  ${hrefLink}><img class="ui-action expand-img" src='images/icon-sprite.png' alt='Icons'>
                   <img class="folder-img" src='images/icon-sprite.png' alt='Icons'>
                   <span>${i.localName}</span>
                 </a></li>`;
@@ -133,16 +138,22 @@ class Folderize {
     $('body').append(newObject.folderTemplateModal);
     newObject.parseDom();
     $("#folderize-btn").click(function () {
-      parseDom('html');
+      newObject.parseDom('html');
     });
 
     $("#folderizeModal").on("click", ".nav-link", function (event) {
-      $(this).children('.ui-action').toggleClass('expand-img');
-      $(this).children('.ui-action').toggleClass('collapse-img');
-      if (!$(this).parent('li').hasClass('active')) {
-        $('.active').removeClass('active');
+      // first we remove all active state folder files
+      $('.active').removeClass('active');
+
+      // check to see if we are collapsing a folder 
+      // Yes then remove highlight
+      // No then add highlight
+      if ($(this).children('.ui-action').hasClass('expand-img')) {
+        $(this).parent('li').toggleClass('active');
       }
-      $(this).parent('li').toggleClass('active');
+      // code to change the image
+      $(this).children('.ui-action').toggleClass('expand-img');
+      $(this).children('.ui-action').toggleClass('collapse-img');      
     });
 
     // $("#folderizeModal").on("click", ".collapse-img", function () {
