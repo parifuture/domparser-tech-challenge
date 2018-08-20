@@ -56,7 +56,7 @@ class Folderize {
                 </div>
                 <div class="col-sm"></div>
                 <div class="col-sm">
-                  <button type="button" style="margin-left: 3em;" class="btn btn-primary">Done</button>
+                  <button onclick="$('#folderizeModal').modal('toggle')" type="button" style="margin-left: 3em;" class="btn btn-primary">Done</button>
                 </div>
               </div>
             </div>
